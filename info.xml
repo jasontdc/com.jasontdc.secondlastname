@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<extension key="com.jasontdc.secondlastname" type="module">
+  <file>secondlastname</file>
+  <name>Second Last Name Extension</name>
+  <description>Adds a Second Last Name field to the basic contact information.</description>
+  <license>MIT</license>
+  <maintainer>
+    <author>Jason Davies</author>
+    <email>jasontdc@gmail.com</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">https://github.com/jasontdc/com.jasontdc.secondlastname</url>
+    <url desc="Documentation">https://github.com/jasontdc/com.jasontdc.secondlastname</url>
+    <url desc="Support">https://github.com/jasontdc/com.jasontdc.secondlastname</url>
+    <url desc="Licensing">https://opensource.org/licenses/MIT</url>
+  </urls>
+  <releaseDate>2016-12-19</releaseDate>
+  <version>0.1</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.2</ver>
+  </compatibility>
+  <comments>This is a new, undeveloped module</comments>
+  <civix>
+    <namespace>CRM/Secondlastname</namespace>
+  </civix>
+</extension>
