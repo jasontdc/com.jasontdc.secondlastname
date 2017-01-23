@@ -7,6 +7,6 @@
 {literal}
 <script type="text/javascript">
   cj('#com_jasontdc_secondlastname_field-div').insertAfter(cj('#last_name').parent());
-  //cj('.crm-inline-edit-form').append(cj('#com_jasontdc_secondlastname_field-div'));
+  cj('#com_jasontdc_secondlastname_field').addClass('big');
 </script>
 {/literal}

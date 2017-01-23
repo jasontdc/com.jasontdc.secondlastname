@@ -11,5 +11,6 @@
 {literal}
 <script type="text/javascript">
   cj('#com_jasontdc_secondlastname_field-td').insertAfter(cj('#last_name').parent());
+  cj('#com_jasontdc_secondlastname_field').addClass('big');
 </script>
 {/literal}
