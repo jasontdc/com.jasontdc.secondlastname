@@ -113,36 +113,42 @@ function secondlastname_civicrm_contact_get_displayname(&$display_name, $contact
 function secondlastname_civicrm_buildForm($formName, &$form) {
 	$templatePath = realpath(dirname(__FILE__)."/templates/CRM/Secondlastname/Form");
 
-  //if we're displaying a contact form, add the second last name field
+	//if we're displaying a contact form, add the second last name field
 	if ($formName == 'CRM_Contact_Form_Inline_ContactName' || $formName == 'CRM_Contact_Form_Contact') {
 
-		$value_array = null;
+		//We only want to add the field for Individuals, since Households and
+		//Organizations don't have a second last name.
+		//This also adds the field for sub-types of the Individual contact type.
+		if(isset($form->_contactType) && $form->_contactType == "Individual") {
 
-    //try to get the current value of the second last name field if it exists
-		if($form->_contactId) {
-			$result = civicrm_api3('CustomValue', 'get', array(
-				'sequential' => 1,
-			  'return.com_jasontdc_secondlastname_group:com_jasontdc_secondlastname_field' => 1,
-			  'entity_id' => $form->_contactId,
-			));
+			$value_array = null;
 
-			if($result && $result['is_error'] == 0) {
-				$value_array = array('value' => getSecondLastName($form->_contactId));
+			//try to get the current value of the second last name field if it exists
+			if(isset($form->_contactId)) {
+				$result = civicrm_api3('CustomValue', 'get', array(
+					'sequential' => 1,
+					'return.com_jasontdc_secondlastname_group:com_jasontdc_secondlastname_field' => 1,
+					'entity_id' => $form->_contactId,
+				));
+
+				if(isset($result) && $result['is_error'] == 0) {
+					$value_array = array('value' => getSecondLastName($form->_contactId));
+				}
 			}
-		}
 
-    //add the field value to the form
-		$form->add('text', 'com_jasontdc_secondlastname_field', ts('Second Last Name'), $value_array);
+			//add the field value to the form
+			$form->add('text', 'com_jasontdc_secondlastname_field', ts('Second Last Name'), $value_array);
 
-    //choose the template for displaying the field depending on whether it is inline or not
-		if($formName == 'CRM_Contact_Form_Inline_ContactName') {
-			CRM_Core_Region::instance('page-body')->add(array(
-				'template' => $templatePath . "/secondlastname.div.tpl"
-			));
-		} else if($formName == 'CRM_Contact_Form_Contact') {
-			CRM_Core_Region::instance('page-body')->add(array(
-				'template' => $templatePath . "/secondlastname.td.tpl"
-			));
+			//choose the template for displaying the field depending on whether it is inline or not
+			if($formName == 'CRM_Contact_Form_Inline_ContactName') {
+				CRM_Core_Region::instance('page-body')->add(array(
+					'template' => $templatePath . "/secondlastname.div.tpl"
+				));
+			} else if($formName == 'CRM_Contact_Form_Contact') {
+				CRM_Core_Region::instance('page-body')->add(array(
+					'template' => $templatePath . "/secondlastname.td.tpl"
+				));
+			}
 		}
 	}
 }
