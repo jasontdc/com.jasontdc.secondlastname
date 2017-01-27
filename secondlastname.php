@@ -125,15 +125,7 @@ function secondlastname_civicrm_buildForm($formName, &$form) {
 
 			//try to get the current value of the second last name field if it exists
 			if(isset($form->_contactId)) {
-				$result = civicrm_api3('CustomValue', 'get', array(
-					'sequential' => 1,
-					'return.com_jasontdc_secondlastname_group:com_jasontdc_secondlastname_field' => 1,
-					'entity_id' => $form->_contactId,
-				));
-
-				if(isset($result) && $result['is_error'] == 0) {
-					$value_array = array('value' => getSecondLastName($form->_contactId));
-				}
+				$value_array = array('value' => getSecondLastName($form->_contactId));
 			}
 
 			//add the field value to the form
