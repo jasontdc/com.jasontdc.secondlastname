@@ -37,6 +37,12 @@ require_once 'secondlastname.civix.php';
  */
 function secondlastname_civicrm_contact_get_displayname(&$display_name, $contactId, $objContact) {
 	try {
+
+		// If the contact is not an invidual, just leave the display name as-is and return
+		if($objContact->contact_type != "Individual") {
+			return;
+		}
+
 		//get the display name from the settings
 		$result = civicrm_api3('Setting', 'get', array(
 			'sequential' => 1,
