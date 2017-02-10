@@ -27,85 +27,72 @@ require_once 'secondlastname.civix.php';
 }
 
 /**
- * Implements hook_civicrm_contact_get_displayname().
+ * Implements hook_civicrm_tokens().
+ *
+ * Defines the tokens provided by this module. 
+ * There is only one token: contact.second_last_name
+ *
+ * @param array $tokens
+ */
+function secondlastname_civicrm_tokens(&$tokens) {
+	// Define the contact.second_last_name token
+  $tokens['contact'] = array(
+    'contact.second_last_name' => 'Second Last Name',
+  );
+}
+
+/**
+ * Implements hook_civicrm_tokenValues().
  *
  * Reconstructs the display name if it contains the second last name field.
  *
- * @param string $display_name
- * @param string $contactId
- * @param CRM_Core_DAO $objContact
+ * @param array $values
+ * @param array $cids
+ * @param string $job
+ * @param array $tokens
+ * @param string $context
  */
-function secondlastname_civicrm_contact_get_displayname(&$display_name, $contactId, $objContact) {
-	try {
+function secondlastname_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(), $context = null) {
+  // Retrieve the token and add it
+  if (!empty($tokens['contact'])) {
+    foreach ($cids as $cid) {
+			$second_last_name = array(
+				'contact.second_last_name' => getSecondLastName($cid),
+			);
+			if(empty($values[$cid])) {
+				$values[$cid] = $second_last_name;
+			} else {
+				$values[$cid] = $values[$cid] + $second_last_name;
+			}
+    }
+  }
+}
 
-		// If the contact is not an invidual, just leave the display name as-is and return
-		if($objContact->contact_type != "Individual") {
-			return;
-		}
-
-		//get the display name from the settings
-		$result = civicrm_api3('Setting', 'get', array(
-			'sequential' => 1,
-			'return' => array("display_name_format"),
-		));
-
-		//look for the second last name field token in the format string
-		if(strpos($result['values'][0]['display_name_format'], '{contact.second_last_name}') !== false) {
-			//if the second last name is in the format, retrieve the value for this contact
-			$second_last_name = getSecondLastName($contactId);
-			//if there's no value, we don't need to do anything
-			if($second_last_name) {
-				$display_name_format = $result['values'][0]['display_name_format'];
-				
-				//first, replace the second last name
-				$display_name = str_replace('{contact.second_last_name}', $second_last_name, $display_name_format);
-
-				//now, iterate over the other tokens and replace each one
-				preg_match_all('/{(.*?)}/', $display_name, $matches);
-				for ($i = 0; $i < count($matches[0]); $i++) {
-					//by default, we'll replace the token by a blank space unless we find the actual value
-					$value = ' '; 
-					$matched = $matches[1][$i];
-
-					preg_match('/^contact\.(.*?)$/', $matched, $match);
-					if(count($match) > 1) {
-						//check to see if we already have the property in objContact
-						if(property_exists($objContact, $match[1])) {
-							//if we can find it, just grab it from there
-							$value = $objContact->{$match[1]};
-						} else {
-							//otherwise we can try to get it from the API
-
-							//we need to special-case the individual suffixes
-							$key = $match[1];
-							if($key == 'individual_prefix') {
-								$key = 'prefix_id';
-							} else if($key == 'individual_suffix') {
-								$key = 'suffix_id';
-							}
-
-							//try to get the value from the API
-							$result = civicrm_api3('Contact', 'get', array(
-								'sequential' => 1,
-								'return' => array($key),
-								'id' => $contactId,
-							));
-							//if we get a valid value we'll use it; otherwise, do nothing
-							if($result && $result["is_error"] == 0) {
-								$value = $result["values"][0][$match[1]];
-							}
-						}
-					}
-
-					//do the replacement
-					$display_name = str_replace($matches[0][$i], $value, $display_name);
-				}
-
-				//now, get rid of any excess spaces--doesn't matter for html, but may be important for other cases
-				$display_name = trim(preg_replace('/[\s]+/',' ',$display_name));
+/**
+ * Implements hook_civicrm_pre().
+ *
+ * Adds the second_last_name field to the contact parameters so it can be used as a
+ * token in the display and sort names.
+ *
+ * @param string $op
+ * @param string $objectName
+ * @param string $id
+ * @param array $params
+ */
+function secondlastname_civicrm_pre($op, $objectName, $id, &$params) {
+	if($objectName == 'Individual') {
+		if($op == 'view') {
+  		$params['contact.second_last_name'] = getSecondLastName($id);
+		} else if($op == 'create' || $OP == 'edit') {
+			if(array_key_exists('com_jasontdc_secondlastname_field', $params)) {
+				$params['contact.second_last_name'] = $params['com_jasontdc_secondlastname_field'];
+			} else if($id) {
+				$params['contact.second_last_name'] = getSecondLastName($id);
+			} else {
+				$params['contact.second_last_name'] = NULL;
 			}
 		}
-	} catch(Exception $e) {}
+	}
 }
 
 /**
