@@ -83,7 +83,7 @@ function secondlastname_civicrm_pre($op, $objectName, $id, &$params) {
 	if($objectName == 'Individual') {
 		if($op == 'view') {
   		$params['contact.second_last_name'] = getSecondLastName($id);
-		} else if($op == 'create' || $OP == 'edit') {
+		} else if($op == 'create' || $op == 'edit') {
 			if(array_key_exists('com_jasontdc_secondlastname_field', $params)) {
 				$params['contact.second_last_name'] = $params['com_jasontdc_secondlastname_field'];
 			} else if($id) {
