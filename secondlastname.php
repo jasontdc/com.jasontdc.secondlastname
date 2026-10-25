@@ -104,7 +104,6 @@ function secondlastname_civicrm_pre($op, $objectName, $id, &$params) {
  * @param CRM_Core_Form $form
  */
 function secondlastname_civicrm_buildForm($formName, &$form) {
-	$templatePath = realpath(dirname(__FILE__)."/templates/CRM/Secondlastname/Form");
 
 	//if we're displaying a contact form, add the second last name field
 	if ($formName == 'CRM_Contact_Form_Inline_ContactName' || $formName == 'CRM_Contact_Form_Contact') {
@@ -126,13 +125,13 @@ function secondlastname_civicrm_buildForm($formName, &$form) {
 
 			//choose the template for displaying the field depending on whether it is inline or not
 			if($formName == 'CRM_Contact_Form_Inline_ContactName') {
-				CRM_Core_Region::instance('page-body')->add(array(
-					'template' => $templatePath . "/secondlastname.div.tpl"
-				));
+				CRM_Core_Region::instance('page-body')->add([
+					'template' => 'CRM/Secondlastname/Form/secondlastname.div.tpl',
+				]);
 			} else if($formName == 'CRM_Contact_Form_Contact') {
-				CRM_Core_Region::instance('page-body')->add(array(
-					'template' => $templatePath . "/secondlastname.td.tpl"
-				));
+				CRM_Core_Region::instance('page-body')->add([
+					'template' => 'CRM/Secondlastname/Form/secondlastname.td.tpl',
+				]);
 			}
 		}
 	}
