@@ -89,21 +89,13 @@ class CRM_Secondlastname_ExtensionUtil {
 
 use CRM_Secondlastname_ExtensionUtil as E;
 
-($GLOBALS['_PathLoad'][0] ?? require __DIR__ . '/mixin/lib/pathload-0.php');
 pathload()->addSearchDir(__DIR__ . '/mixin/lib');
 spl_autoload_register('_secondlastname_civix_class_loader', TRUE, TRUE);
 
 function _secondlastname_civix_class_loader($class) {
   if ($class === 'CRM_Secondlastname_DAO_Base') {
-    if (version_compare(CRM_Utils_System::version(), '5.74.beta', '>=')) {
-      class_alias('CRM_Core_DAO_Base', 'CRM_Secondlastname_DAO_Base');
-      // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
-    }
-    else {
-      $realClass = 'CiviMix\\Schema\\Secondlastname\\DAO';
-      class_alias($realClass, $class);
-      // ^^ Abstract names -- discourage IDE's from picking up on this association.
-    }
+    class_alias('CRM_Core_DAO_Base', 'CRM_Secondlastname_DAO_Base');
+    // ^^ Materialize concrete names -- encourage IDE's to pick up on this association.
     return;
   }
 
