@@ -9,6 +9,7 @@
 			"VARIANT": "4-8.5-trixie"
 		}
 	},
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
@@ -16,8 +17,17 @@
 	// "customizations": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8080]
-
+	"forwardPorts": [8080],
+	"features": {
+		"ghcr.io/devcontainers/features/php:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"google.google-antigravity"
+			]
+		}
+	}
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html"
 
