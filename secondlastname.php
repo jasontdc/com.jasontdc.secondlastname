@@ -19,7 +19,7 @@ require_once 'secondlastname.civix.php';
 			'entity_id' => $cid,
 		));
 
-		return $result['values'][0]['latest'];
+		return $result['values'][0]['latest'] ?? '';
 
 	} catch(Exception $e) {}
 
@@ -147,7 +147,7 @@ function secondlastname_civicrm_postProcess($formName, &$form) {
 	// If the user is posting a contact form, update the second last name field
 	if ($formName == 'CRM_Contact_Form_Inline_ContactName' || $formName == 'CRM_Contact_Form_Contact') {
 		// Only set the second last name field for individuals
-		if(isset($form->_contactType) && $form->_contactType == "Individual") {
+		if(isset($form->_contactType) && $form->_contactType == "Individual" && isset($form->_submitValues['com_jasontdc_secondlastname_field'], $form->_contactId)) {
 			$result = civicrm_api3('CustomValue', 'create', array(
 				'entity_id' => $form->_contactId,
 				'custom_com_jasontdc_secondlastname_group:com_jasontdc_secondlastname_field' => $form->_submitValues['com_jasontdc_secondlastname_field'],
